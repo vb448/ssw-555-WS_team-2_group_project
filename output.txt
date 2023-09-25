@@ -1,0 +1,28 @@
+Individuals:
++-------+----------------------+
+|   ID  |         Name         |
++-------+----------------------+
+|  @I1@ |    Raj /Palival/     |
+|  @I2@ | Narayanlal /Palival/ |
+|  @I3@ |  Santosh /Palival/   |
+|  @I4@ | Bhupendra /Palival/  |
+|  @I5@ |   Reenku /Palival/   |
+|  @I6@ |    Pratik /Rawal/    |
+|  @I7@ |  Shankarlal /Rawal/  |
+|  @I8@ |     Ratan /Devi/     |
+|  @I9@ |    Surya /Rawal/     |
+| @I10@ |   Rithesh /Rawal/    |
+| @I11@ |    Rakesh /Rawal/    |
+| @I12@ |    Lehan /Rawal/     |
++-------+----------------------+
+
+Families:
++------+----------------------+-------------------+
+|  ID  |       Husband        |        Wife       |
++------+----------------------+-------------------+
+| @F1@ | Narayanlal /Palival/ | Santosh /Palival/ |
+| @F2@ |  Shankarlal /Rawal/  |    Ratan /Devi/   |
+| @F3@ |    Rakesh /Rawal/    | Santosh /Palival/ |
+| @F4@ |    Pratik /Rawal/    |  Reenku /Palival/ |
+| @F5@ |    Surya /Rawal/     |    Ratan /Devi/   |
++------+----------------------+-------------------+
