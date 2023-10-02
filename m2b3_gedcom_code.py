@@ -11,7 +11,7 @@ def process_gedcom_line(line):
     global current_individual, current_family
     
     tokens = line.strip().split()
-    print(tokens)
+    #print(tokens)
     if len(tokens) < 2:
         return
     
