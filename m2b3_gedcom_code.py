@@ -1,7 +1,10 @@
 from prettytable import PrettyTable
+from datetime import datetime
 
 individuals = {}
 families = {}
+
+error_messages = []
 
 current_individual = None
 current_family = None
@@ -98,6 +101,19 @@ family_table.field_names = ["ID", "Husband ID", "Husband", "Wife ID", "Wife", "M
 
 # Populate PrettyTables
 for individual_id, individual in individuals.items():
+    death_date = individual["death_date"]
+    if death_date:
+        death_date_obj = datetime.strptime(death_date, "%d %b %Y")
+        for family_id, family in families.items():
+            husband_id = family["husband_id"]
+            wife_id = family["wife_id"]
+            if individual_id == husband_id or individual_id == wife_id:
+                marriage_date = family["marriage_date"]
+                if marriage_date:
+                    marriage_date_obj = datetime.strptime(marriage_date, "%d %b %Y")
+                    if death_date_obj < marriage_date_obj:
+                        error_msg = f"ERROR: INDIVIDUAL: US05: {individual_id}: Died {death_date} before marriage {marriage_date}"
+                        error_messages.append(error_msg)
     individual_table.add_row([individual_id, individual["name"], individual["death_date"]])
 
 for family_id, family in families.items():
@@ -108,8 +124,16 @@ for family_id, family in families.items():
 
     marriage_date = family["marriage_date"]
     divorce_date = family["divorce_date"]
+
+    if marriage_date and divorce_date:
+        if marriage_date > divorce_date:
+            error_msg = f"ERROR: FAMILY: US04: {family_id}: {family['husband_id']} and {family['wife_id']} Married {marriage_date} after divorce on {divorce_date}"
+            error_messages.append(error_msg)
+    else:
+        error_msg = ""
     
     family_table.add_row([family_id, husband_id, husband_name, wife_id, wife_name, marriage_date, divorce_date])
+
 
 
 print("Individuals:")
@@ -117,3 +141,8 @@ print(individual_table)
 
 print("\nFamilies:")
 print(family_table)
+
+print("\n" * 2)
+
+for error_msg in error_messages:
+    print(error_msg)
