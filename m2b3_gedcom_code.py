@@ -22,12 +22,24 @@ def process_gedcom_line(line):
 
     if tag.startswith('@I'):
         individual_id = tokens[1]
-        individuals[individual_id] = {"name": "", "death_date": None}
+        individuals[individual_id] = {"name": "", "birth_date": None, "death_date": None}
         current_individual = individuals[individual_id]
     elif tag == "NAME" and current_individual:
         name = " ".join(tokens[2:])
         current_individual["name"] = name
 
+    elif tag == "BIRT" and current_individual:
+        birth_date = None
+        for line in file:
+            inner_tokens = line.strip().split()
+            if len(inner_tokens) < 2:
+                break
+            inner_tag = inner_tokens[1]
+            if inner_tag == "DATE":
+                birth_date = " ".join(inner_tokens[2:])
+                break
+        current_individual["birth_date"] = birth_date
+        
     elif tag == "DEAT" and current_individual:
         death_date = None
         for line in file:
@@ -93,7 +105,7 @@ with open('My-Family.ged', 'r') as file:
 
 # Create PrettyTable for individuals
 individual_table = PrettyTable()
-individual_table.field_names = ["ID", "Name", "Death Date"]
+individual_table.field_names = ["ID", "Name", "Birth Date", "Death Date"]
 
 # Create PrettyTable for families
 family_table = PrettyTable()
@@ -114,7 +126,7 @@ for individual_id, individual in individuals.items():
                     if death_date_obj < marriage_date_obj:
                         error_msg = f"ERROR: INDIVIDUAL: US05: {individual_id}: Died {death_date} before marriage {marriage_date}"
                         error_messages.append(error_msg)
-    individual_table.add_row([individual_id, individual["name"], individual["death_date"]])
+    individual_table.add_row([individual_id, individual["name"], individual["birth_date"], individual["death_date"]])
 
 for family_id, family in families.items():
     husband_id = family["husband_id"]
