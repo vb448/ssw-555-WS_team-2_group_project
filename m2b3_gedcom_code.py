@@ -126,11 +126,11 @@ for family_id, family in families.items():
     divorce_date = family["divorce_date"]
 
     if marriage_date and divorce_date:
-        if marriage_date > divorce_date:
-            error_msg = f"ERROR: FAMILY: US04: {family_id}: {family['husband_id']} and {family['wife_id']} Married {marriage_date} after divorce on {divorce_date}"
+        marriage_date_obj = datetime.strptime(marriage_date, "%d %b %Y")
+        divorce_date_obj = datetime.strptime(divorce_date, "%d %b %Y")
+        if marriage_date_obj > divorce_date_obj:
+            error_msg = f"ERROR: FAMILY: US04: {family_id}: {husband_id} ({husband_name}) and {wife_id} ({wife_name}) Married {marriage_date} after divorce on {divorce_date}"
             error_messages.append(error_msg)
-    else:
-        error_msg = ""
     
     family_table.add_row([family_id, husband_id, husband_name, wife_id, wife_name, marriage_date, divorce_date])
 
