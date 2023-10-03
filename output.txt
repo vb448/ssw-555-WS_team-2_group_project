@@ -1,1 +1,52 @@
-['ERROR: INDIVIDUAL: US05: @I3@: Died 14 DEC 2009 before marriage 13 MAY 2011', 'ERROR: INDIVIDUAL: US05: @I3@: Died 14 DEC 2009 before marriage 3 AUG 2011', 'ERROR: FAMILY: US04: @F1@: @I2@ (Narayanlal /Palival/) and @I3@ (Santosh /Palival/) Married 13 MAY 2011 after divorce on 3 MAR 2010', "User Story: 01 - Dates before current date\n\nErrors related to Dates before current date (US01)\n: ([{'name': 'Shankarlal /Rawal/', 'birth_date': '16 AUG 1940', 'death_date': '14 DEC 2030'}], [])\n\nThese are the details for either of the birthdates, deathdates, marriagedates and divorcedates that have occured after the current date.\n------------------------------------------------------------------------------\n\nUser Story 06: Divorce before death\n\nErrors related to divorce date not being before death date (US06)\n: [{'name': 'Santosh /Palival/', 'birth_date': '24 OCT 1970', 'death_date': '14 DEC 2009'}]\n\nThese are the details for divorce dates that have occured after the death date of an individual.\n------------------------------------------------------------------------------\n\n"]
+Individuals:
++-------+----------------------+-------------+-------------+
+|   ID  |         Name         |  Birth Date |  Death Date |
++-------+----------------------+-------------+-------------+
+|  @I1@ |    Raj /Palival/     | 21 FEB 1998 |     None    |
+|  @I2@ | Narayanlal /Palival/ | 20 OCT 1967 |     None    |
+|  @I3@ |  Santosh /Palival/   | 24 OCT 1970 |     None    |
+|  @I4@ | Bhupendra /Palival/  | 24 APR 1995 |     None    |
+|  @I5@ |   Reenku /Palival/   |  7 FEB 1994 |     None    |
+|  @I6@ |    Pratik /Rawal/    | 14 MAR 1990 |     None    |
+|  @I7@ |  Shankarlal /Rawal/  | 16 AUG 1940 | 14 DEC 2000 |
+|  @I8@ |     Ratan /Devi/     | 15 MAY 1940 | 12 JAN 2014 |
+|  @I9@ |    Surya /Rawal/     |  6 JUL 2022 |  4 MAY 2021 |
+| @I10@ |   Rithesh /Rawal/    |  4 MAY 1976 |     None    |
+| @I11@ |    Rakesh /Rawal/    | 19 MAY 1970 |     None    |
+| @I12@ |    Lehan /Rawal/     |  3 JUL 2015 |     None    |
++-------+----------------------+-------------+-------------+
+
+Families:
++------+------------+----------------------+---------+-------------------+---------------+--------------+
+|  ID  | Husband ID |       Husband        | Wife ID |        Wife       | Marriage Date | Divorce Date |
++------+------------+----------------------+---------+-------------------+---------------+--------------+
+| @F1@ |    @I2@    | Narayanlal /Palival/ |   @I3@  | Santosh /Palival/ |  13 MAY 2011  |  3 MAR 2010  |
+| @F2@ |    @I7@    |  Shankarlal /Rawal/  |   @I8@  |    Ratan /Devi/   |   8 FEB 2001  |     None     |
+| @F3@ |   @I11@    |    Rakesh /Rawal/    |   @I3@  | Santosh /Palival/ |   3 AUG 2011  |     None     |
+| @F4@ |    @I6@    |    Pratik /Rawal/    |   @I5@  |  Reenku /Palival/ |  10 JAN 2020  |     None     |
+| @F5@ |    @I9@    |    Surya /Rawal/     |   @I8@  |    Ratan /Devi/   |   2 APR 2002  |     None     |
++------+------------+----------------------+---------+-------------------+---------------+--------------+
+
+
+
+ERROR: INDIVIDUAL: US05: @I7@: Died 14 DEC 2000 before marriage 8 FEB 2001
+ERROR: INDIVIDUAL: US02: @I9@: Birth date 6 JUL 2022 occurs after marriage date 2 APR 2002
+ERROR: INDIVIDUAL: US03: @I9@: Birth date 6 JUL 2022 occurs after death date 4 MAY 2021
+ERROR: FAMILY: US04: @F1@: @I2@ (Narayanlal /Palival/) and @I3@ (Santosh /Palival/) Married 13 MAY 2011 after divorce on 3 MAR 2010
+User Story: 01 - Dates before current date
+
+Errors related to Dates before current date (US01)
+: ([], [])
+
+These are the details for either of the birthdates, deathdates, marriagedates and divorcedates that have occured after the current date.
+------------------------------------------------------------------------------
+
+User Story 06: Divorce before death
+
+Errors related to divorce date not being before death date (US06)
+: []
+
+These are the details for divorce dates that have occured after the death date of an individual.
+------------------------------------------------------------------------------
+
+
