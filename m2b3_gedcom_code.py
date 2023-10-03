@@ -171,40 +171,29 @@ for family_id, family in families.items():
     family_table.add_row([family_id, husband_id, husband_name, wife_id, wife_name, marriage_date, divorce_date])
 
 #User Story: 01 - Dates before current date
-def US1_dates_before_current_date(individuals, families):
+def US1_dates_before_current_date(individuals, family):
     Error01_individuals = []
     Error01_family = []
-    for individual_id, individual in individuals.items():
-        death_date = individual['death_date']
-        # Assuming you have birthday information in the individual dictionary
-        # If not, you'll have to add it when processing the GEDCOM file
-        birthday = individual.get("birth_date") # Add this line in GEDCOM processing if birthday data is available
-
-        if death_date and death_date != 'NA':
-            deathday = datetime.strptime(death_date, "%d %b %Y")  # Adjust the date format as per your data
+    for id in individuals:
+        if individuals[id]['death_date']!='NA' and individuals[id]['death_date']!=None:
+            deathday = datetime.strptime(individuals[id]["death_date"], "%d %b %Y")
+            birthday = datetime.strptime(individuals[id]["birth_date"], "%d %b %Y")
             if deathday > datetime.now():
-                Error01_individuals.append(individual_id)
+                Error01_individuals.append(individuals[id])
+            if birthday > datetime.now():
+                Error01_individuals.append(individuals[id])
 
-        if birthday and birthday != 'NA':
-            birthday_date = datetime.strptime(birthday, "%d %b %Y")  # Adjust the date format as per your data
-            if birthday_date > datetime.now():
-                Error01_individuals.append(individual_id)
-
-    for family_id, family in families.items():
-        divorce_date = family["divorce_date"]
-        marriage_date = family["marriage_date"]
-
-        if divorce_date and divorce_date != 'NA':
-            divorceday = datetime.strptime(divorce_date, "%d %b %Y")  # Adjust the date format as per your data
+    for id in family:
+        if family[id]["divorce_date"] != 'NA' and family[id]["divorce_date"] != None:
+            divorceday = datetime.strptime(family[id]["divorce_date"], "%d %b %Y")
+            marriageday = datetime.strptime(family[id]["marriage_date"], "%d %b %Y")
             if divorceday > datetime.now():
-                Error01_family.append(family_id)
-
-        if marriage_date and marriage_date != 'NA':
-            marriageday = datetime.strptime(marriage_date, "%d %b %Y")  # Adjust the date format as per your data
+                Error01_family.append(family[id])
             if marriageday > datetime.now():
-                Error01_family.append(family_id)
+                Error01_family.append(family[id])
 
     return Error01_individuals, Error01_family
+
 
 def US6_divorce_before_death(individuals, family):
     Error06 = []
