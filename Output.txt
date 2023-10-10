@@ -1,0 +1,35 @@
+User Story: 01 - Dates before current date
+
+Errors related to User Story: 01 - Dates before current date
+: ([{'id': 'I8', 'Name': 'Tyler', 'Lastname': 'Roberts', 'Gender': 'M', 'Birthday': '3011-07-16', 'Death': '1979-11-04', 'Alive': 'False', 'Child': '{F5}', 'Spouse': '{F2}', 'Age': -1032}], [])
+
+These are the details for either of the birthdates, deathdates, marriagedates, and divorcedates that have occurred after the current date.
+------------------------------------------------------------------------------
+
+
+User Story 06: Divorce before death
+
+Errors related to User Story 06: Divorce before death
+: []
+
+These are the details for divorce dates that have occurred after the death date of an individual.
+------------------------------------------------------------------------------
+
+
+User Story: 07 - Death should be less than 150 years after birth for dead people, and current date should be less than 150 years after birth for all living people
+
+Errors related to User Story: 07 - Death should be less than 150 years after birth for dead people, and current date should be less than 150 years after birth for all living people
+: ['ERROR US07: I18 2001-08-06 Tahila Age: 151']
+
+These are the details for dead people who had age more than 150 years or alive people with current age more than 150 years.
+------------------------------------------------------------------------------
+
+
+User Story: 10 - Marriage should be at least 14 years after birth of both spouses (parents must be at least 14 years old)
+
+Errors related to User Story: 10 - Marriage should be at least 14 years after birth of both spouses (parents must be at least 14 years old)
+: []
+
+These are the details for who were married below 14 years.
+------------------------------------------------------------------------------
+
