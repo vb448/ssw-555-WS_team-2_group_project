@@ -1,5 +1,6 @@
 from prettytable import PrettyTable
 from datetime import datetime
+import dateutil.relativedelta
 
 individuals = {}
 families = {}
@@ -57,6 +58,13 @@ def process_gedcom_line(line):
         families[family_id] = {"husband_id": "", "wife_id": "", "marriage_date": None, "divorce_date": None}
         current_family = families[family_id]
 
+    elif tag == "CHIL" and current_family:
+        childId = tokens[2]
+        if "Children" not in current_family:
+            current_family.update({"Children": [childId]})
+        else:
+            current_family["Children"].append(childId)
+
     elif tag == "HUSB" and current_family:
         husband_id = tokens[2]
         current_family["husband_id"] = husband_id
@@ -98,7 +106,7 @@ def process_gedcom_line(line):
         current_family["divorce_date"] = divorce_date
 
 # Read the GEDCOM file line by line and process each line
-with open('My-Family.ged', 'r') as file:
+with open('My-Family-1.ged', 'r') as file:
     for line in file:
         process_gedcom_line(line)
 
@@ -109,7 +117,7 @@ individual_table.field_names = ["ID", "Name", "Birth Date", "Death Date"]
 
 # Create PrettyTable for families
 family_table = PrettyTable()
-family_table.field_names = ["ID", "Husband ID", "Husband", "Wife ID", "Wife", "Marriage Date", "Divorce Date"]
+family_table.field_names = ["ID", "Husband ID", "Husband", "Wife ID", "Wife", "Marriage Date", "Divorce Date", "Children"]
 
 # Populate PrettyTables
 for individual_id, individual in individuals.items():
@@ -161,14 +169,58 @@ for family_id, family in families.items():
     marriage_date = family["marriage_date"]
     divorce_date = family["divorce_date"]
 
+    #user story 08 and 09
+    if "Children" in family:
+        for child in family["Children"]:
+            marriage_date_obj = datetime.strptime(marriage_date, "%d %b %Y")
+            birth_date_obj = datetime.strptime(individuals[child]["birth_date"], "%d %b %Y")
+
+            if individuals[wife_id]["death_date"]:
+                mom_death_date_obj = datetime.strptime(individuals[wife_id]["death_date"], "%d %b %Y")
+
+            if individuals[husband_id]["death_date"]:
+                dad_death_date_obj = datetime.strptime(individuals[husband_id]["death_date"], "%d %b %Y")
+
+
+            #08
+            if birth_date_obj < marriage_date_obj:
+                error_msg = f"ERROR: FAMILY: US08: {child}: Born on {birth_date_obj} before the marriage of their parents on {marriage_date_obj}"
+                error_messages.append(error_msg)   
+
+            if divorce_date:
+                divorce_date_obj = datetime.strptime(divorce_date, "%d %b %Y") 
+                difference = dateutil.relativedelta.relativedelta(birth_date_obj, divorce_date_obj)
+
+                if difference.months > 9:
+                    error_msg = f"ERROR: FAMILY: US08: {child}: Born on {birth_date_obj} more than 9 months after the divorce of their parents on {divorce_date_obj}"
+                    error_messages.append(error_msg) 
+
+            #09
+            if individuals[wife_id]["death_date"]:
+                if mom_death_date_obj < birth_date_obj:
+                    error_msg = f"ERROR: FAMILY: US09: {child}: Born on {birth_date_obj} after the death of their mom on {mom_death_date_obj}"
+                    error_messages.append(error_msg)   
+
+            if individuals[husband_id]["death_date"]:
+                difference = dateutil.relativedelta.relativedelta(birth_date_obj, dad_death_date_obj)
+
+                if difference.months > 9:
+                    error_msg = f"ERROR: FAMILY: US09: {child}: Born on {birth_date_obj} more than 9 months after the death of their dad on {dad_death_date_obj}"
+                    error_messages.append(error_msg) 
+
+    if "Children" in family:
+        children = family["Children"]
+    else:
+        children = []
+
     if marriage_date and divorce_date:
         marriage_date_obj = datetime.strptime(marriage_date, "%d %b %Y")
         divorce_date_obj = datetime.strptime(divorce_date, "%d %b %Y")
         if marriage_date_obj > divorce_date_obj:
             error_msg = f"ERROR: FAMILY: US04: {family_id}: {husband_id} ({husband_name}) and {wife_id} ({wife_name}) Married {marriage_date} after divorce on {divorce_date}"
-            error_messages.append(error_msg)
+            error_messages.append(error_msg)    
     
-    family_table.add_row([family_id, husband_id, husband_name, wife_id, wife_name, marriage_date, divorce_date])
+    family_table.add_row([family_id, husband_id, husband_name, wife_id, wife_name, marriage_date, divorce_date, children])
 
 #User Story: 01 - Dates before current date
 def US1_dates_before_current_date(individuals, family):
