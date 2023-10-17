@@ -1,3 +1,32 @@
+Individuals:
++-----+---------+-----------+--------+------------+------------+-------+-------+--------+-------+
+|  ID |   Name  |  Lastname | Gender |  Birthday  |   Death    | Alive | Child | Spouse |  Age  |
++-----+---------+-----------+--------+------------+------------+-------+-------+--------+-------+
+|  I1 |  Allen  |  Roberts  |   M    | 1940-01-01 | 2011-05-06 | False |  {F2} |  {F1}  |   71  |
+|  I2 |  Julie  | Jefferson |   F    | 1945-12-04 | 2019-02-11 | False |   NA  |  {F1}  |   73  |
+|  I3 | Jenifer |  Roberts  |   F    | 1975-05-01 |     NA     |  True |  {F1} |  {F4}  |   48  |
+|  I4 |   Nick  |  Rosberg  |   M    | 1974-11-05 |     NA     |  True |   NA  |  {F3}  |   48  |
+|  I5 |   Andy  |   Raonic  |   M    | 1974-12-06 |     NA     |  True |   NA  |  {F4}  |   48  |
+|  I6 |  Marie  |   Raonic  |   F    | 2002-07-04 |     NA     |  True |  {F4} |   NA   |   21  |
+|  I7 |  Roger  |  Rosberg  |   M    | 2021-03-01 |     NA     |  True |  {F3} |   NA   |   2   |
+|  I8 |  Tyler  |  Roberts  |   M    | 3011-07-16 | 1979-11-04 | False |  {F5} |  {F2}  | -1032 |
+|  I9 |  Jenny  |  Gilbert  |   F    | 1918-03-31 | 1982-01-02 | False |   NA  |  {F2}  |   63  |
+| I10 |   Mark  |  Roberts  |   M    | 1945-05-12 | 1989-01-10 | False |  {F2} |  {F6}  |   43  |
+| I11 |  Agatha |   Murray  |   F    | 1950-02-04 |     NA     |  True |   NA  |  {F7}  |   73  |
+| I12 |  Joseph |  Reynolds |   M    | 1950-05-04 |     NA     |  True |   NA  |  {F7}  |   73  |
+| I13 |  Jeremy |  Roberts  |   M    | 1982-12-01 |     NA     |  True |  {F6} |   NA   |   40  |
+| I14 |  Lewis  |  Reynolds |   M    | 1994-03-12 |     NA     |  True |  {F7} |   NA   |   29  |
+| I15 |  Lewis  |  Roberts  |   M    | 1982-05-04 | 2008-04-15 | False |  {F2} |  {F8}  |   25  |
+| I16 |  Laura  |  Julliet  |   NA   | 1988-03-01 |     NA     |  True |   NA  |  {F8}  |   35  |
+| I17 |  Oscar  |  Roberts  |   M    | 1848-09-04 | 1900-03-02 | False |   NA  |  {F5}  |   51  |
+| I18 |  Tahila |  Stewarts |   F    | 1850-02-01 | 2001-08-06 | False |   NA  |  {F5}  |  151  |
+| I19 |  Jhonny |  Roberts  |   M    | 1900-03-02 |     NA     |  True |  {F5} |   NA   |  123  |
++-----+---------+-----------+--------+------------+------------+-------+-------+--------+-------+
+Families:
++----+------------+--------------+------------------+---------+-----------+---------------+---------+----------+----------+
+| ID | Husband ID | Husband Name | Husband Lastname | Wife ID | Wife Name | Wife Lastname | Married | Divorced | Children |
++----+------------+--------------+------------------+---------+-----------+---------------+---------+----------+----------+
++----+------------+--------------+------------------+---------+-----------+---------------+---------+----------+----------+
 User Story: 01 - Dates before current date
 
 Errors related to User Story: 01 - Dates before current date
