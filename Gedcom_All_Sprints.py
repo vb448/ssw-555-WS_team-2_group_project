@@ -214,7 +214,6 @@ def US10_marriage_after_14(family, individuals):
 
 
 if __name__ == "__main__":
-    # Read the file
     with open("Test_File.ged", "r") as gedcomf:
         gedcomfile = [line.rstrip('\n') for line in gedcomf]
 
