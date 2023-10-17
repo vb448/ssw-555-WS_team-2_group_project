@@ -10,6 +10,10 @@ error_messages = []
 current_individual = None
 current_family = None
 
+individual_ids = set()
+family_ids = set()
+
+
 # Process a GEDCOM line and update data structures
 def process_gedcom_line(line):
     global current_individual, current_family
@@ -23,6 +27,11 @@ def process_gedcom_line(line):
 
     if tag.startswith('@I'):
         individual_id = tokens[1]
+        if individual_id in individual_ids:
+            error_msg = f"ERROR: INDIVIDUAL: US22: {individual_id}: Individual ID is not unique"
+            error_messages.append(error_msg)
+        else:
+            individual_ids.add(individual_id)
         individuals[individual_id] = {"name": "", "birth_date": None, "death_date": None}
         current_individual = individuals[individual_id]
     elif tag == "NAME" and current_individual:
@@ -55,6 +64,11 @@ def process_gedcom_line(line):
     
     elif tag.startswith('@F'):
         family_id = tokens[1]
+        if family_id in family_ids:
+            error_msg = f"ERROR: FAMILY: US22: {family_id}: Family ID is not unique"
+            error_messages.append(error_msg)
+        else:
+            family_ids.add(family_id)
         families[family_id] = {"husband_id": "", "wife_id": "", "marriage_date": None, "divorce_date": None}
         current_family = families[family_id]
 
@@ -106,7 +120,7 @@ def process_gedcom_line(line):
         current_family["divorce_date"] = divorce_date
 
 # Read the GEDCOM file line by line and process each line
-with open('My-Family-1.ged', 'r') as file:
+with open('My-Family.ged', 'r') as file:
     for line in file:
         process_gedcom_line(line)
 
@@ -119,10 +133,21 @@ individual_table.field_names = ["ID", "Name", "Birth Date", "Death Date"]
 family_table = PrettyTable()
 family_table.field_names = ["ID", "Husband ID", "Husband", "Wife ID", "Wife", "Marriage Date", "Divorce Date", "Children"]
 
+# a dictionary to track individuals with the same name and birth date
+name_birth_dict = {}
+
 # Populate PrettyTables
 for individual_id, individual in individuals.items():
+    name = individual["name"]
     birth_date = individual["birth_date"]
     death_date = individual["death_date"]
+
+    name_birth_key = (name, birth_date)
+
+    if name_birth_key in name_birth_dict:
+        name_birth_dict[name_birth_key].append(individual_id)
+    else:
+        name_birth_dict[name_birth_key] = [individual_id]
 
     if death_date:
         death_date_obj = datetime.strptime(death_date, "%d %b %Y")
@@ -138,6 +163,11 @@ for individual_id, individual in individuals.items():
                         error_messages.append(error_msg)
 
     if birth_date:
+        for same_name_birth_id in name_birth_dict[name_birth_key]:
+            if same_name_birth_id != individual_id:
+                error_msg = f"ERROR: INDIVIDUAL: US23: {individual_id} and {same_name_birth_id}: Have the same name and birth date {name} - {birth_date}"
+                error_messages.append(error_msg)
+
         birth_date_obj = datetime.strptime(birth_date, "%d %b %Y")
 
         for family_id, family in families.items():
@@ -284,6 +314,8 @@ print("\nFamilies:")
 print(family_table)
 
 print("\n" * 2)
+
+print(name_birth_dict)
 
 for error_msg in error_messages:
     print(error_msg)
