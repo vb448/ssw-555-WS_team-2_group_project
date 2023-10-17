@@ -133,7 +133,6 @@ def display_gedcom_table(individuals, family):
     
     with open('Output.txt', 'w') as output:
         
-        # Print individuals table
         inditable = PrettyTable()
         inditable.field_names = ['ID', 'Name', 'Lastname', 'Gender', 'Birthday', 'Death', 'Alive', 'Child', 'Spouse', 'Age']
         inditable.add_rows([individual.values() for individual in individuals.values()])
