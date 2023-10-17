@@ -3,7 +3,7 @@ Individuals:
 |   ID  |         Name         |  Birth Date |  Death Date |
 +-------+----------------------+-------------+-------------+
 |  @I1@ |    Raj /Palival/     | 21 FEB 1998 |     None    |
-|  @I2@ | Narayanlal /Palival/ | 20 OCT 1967 |     None    |
+|  @I2@ | Narayanlal /Palival/ | 20 OCT 2002 |     None    |
 |  @I3@ |  Santosh /Palival/   | 24 OCT 1970 |     None    |
 |  @I4@ | Bhupendra /Palival/  | 24 APR 1995 |     None    |
 |  @I5@ |   Reenku /Palival/   |  7 FEB 1994 |     None    |
@@ -14,25 +14,33 @@ Individuals:
 | @I10@ |   Rithesh /Rawal/    |  4 MAY 1976 |     None    |
 | @I11@ |    Rakesh /Rawal/    | 19 MAY 1970 |     None    |
 | @I12@ |    Lehan /Rawal/     |  3 JUL 2015 |     None    |
+| @I13@ |    Raj /Palival/     | 21 FEB 1998 |     None    |
 +-------+----------------------+-------------+-------------+
 
 Families:
-+------+------------+----------------------+---------+-------------------+---------------+--------------+
-|  ID  | Husband ID |       Husband        | Wife ID |        Wife       | Marriage Date | Divorce Date |
-+------+------------+----------------------+---------+-------------------+---------------+--------------+
-| @F1@ |    @I2@    | Narayanlal /Palival/ |   @I3@  | Santosh /Palival/ |  13 MAY 2011  |  3 MAR 2010  |
-| @F2@ |    @I7@    |  Shankarlal /Rawal/  |   @I8@  |    Ratan /Devi/   |   8 FEB 2001  |     None     |
-| @F3@ |   @I11@    |    Rakesh /Rawal/    |   @I3@  | Santosh /Palival/ |   3 AUG 2011  |     None     |
-| @F4@ |    @I6@    |    Pratik /Rawal/    |   @I5@  |  Reenku /Palival/ |  10 JAN 2020  |     None     |
-| @F5@ |    @I9@    |    Surya /Rawal/     |   @I8@  |    Ratan /Devi/   |   2 APR 2002  |     None     |
-+------+------------+----------------------+---------+-------------------+---------------+--------------+
++------+------------+----------------------+---------+-------------------+---------------+--------------+--------------------------+
+|  ID  | Husband ID |       Husband        | Wife ID |        Wife       | Marriage Date | Divorce Date |         Children         |
++------+------------+----------------------+---------+-------------------+---------------+--------------+--------------------------+
+| @F1@ |    @I2@    | Narayanlal /Palival/ |   @I3@  | Santosh /Palival/ |  13 MAY 2011  |  3 MAR 2010  | ['@I1@', '@I4@', '@I5@'] |
+| @F2@ |    @I7@    |  Shankarlal /Rawal/  |   @I8@  |    Ratan /Devi/   |   8 FEB 2001  |     None     |         ['@I2@']         |
+| @F3@ |   @I11@    |    Rakesh /Rawal/    |   @I3@  | Santosh /Palival/ |   3 AUG 2011  |     None     |        ['@I12@']         |
+| @F4@ |    @I6@    |    Pratik /Rawal/    |   @I5@  |  Reenku /Palival/ |  10 JAN 2020  |     None     |            []            |
+| @F5@ |    @I9@    |    Surya /Rawal/     |   @I8@  |    Ratan /Devi/   |   2 APR 2002  |     None     |        ['@I10@']         |
++------+------------+----------------------+---------+-------------------+---------------+--------------+--------------------------+
 
 
 
+ERROR: INDIVIDUAL: US22: @I1@: Individual ID is not unique
 ERROR: INDIVIDUAL: US05: @I7@: Died 14 DEC 2000 before marriage 8 FEB 2001
 ERROR: INDIVIDUAL: US02: @I9@: Birth date 6 JUL 2022 occurs after marriage date 2 APR 2002
 ERROR: INDIVIDUAL: US03: @I9@: Birth date 6 JUL 2022 occurs after death date 4 MAY 2021
+ERROR: INDIVIDUAL: US23: @I13@ and @I1@: Have the same name and birth date Raj /Palival/ - 21 FEB 1998
+ERROR: FAMILY: US08: @I1@: Born on 1998-02-21 00:00:00 before the marriage of their parents on 2011-05-13 00:00:00
+ERROR: FAMILY: US08: @I4@: Born on 1995-04-24 00:00:00 before the marriage of their parents on 2011-05-13 00:00:00
+ERROR: FAMILY: US08: @I5@: Born on 1994-02-07 00:00:00 before the marriage of their parents on 2011-05-13 00:00:00
 ERROR: FAMILY: US04: @F1@: @I2@ (Narayanlal /Palival/) and @I3@ (Santosh /Palival/) Married 13 MAY 2011 after divorce on 3 MAR 2010
+ERROR: FAMILY: US09: @I2@: Born on 2002-10-20 00:00:00 more than 9 months after the death of their dad on 2000-12-14 00:00:00
+ERROR: FAMILY: US08: @I10@: Born on 1976-05-04 00:00:00 before the marriage of their parents on 2002-04-02 00:00:00
 User Story: 01 - Dates before current date
 
 Errors related to Dates before current date (US01)

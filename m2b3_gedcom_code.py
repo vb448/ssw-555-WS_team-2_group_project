@@ -315,7 +315,5 @@ print(family_table)
 
 print("\n" * 2)
 
-print(name_birth_dict)
-
 for error_msg in error_messages:
     print(error_msg)
