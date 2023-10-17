@@ -260,7 +260,7 @@ if __name__ == "__main__":
         output_lines.append("------------------------------------------------------------------------------\n\n")
 
     output = "\n".join(output_lines)
-    with open("Output.txt", "w") as out:
+    with open("Output.txt", "a") as out:
             out.write(output)
 
 
