@@ -45,6 +45,29 @@ def calculate_age_at_death(birth_date, death_date):
     death_date_obj = datetime.strptime(death_date, "%d %b %Y")
     age_at_death = death_date_obj.year - birth_date_obj.year - ((death_date_obj.month, death_date_obj.day) < (birth_date_obj.month, birth_date_obj.day))
     return age_at_death
+
+#US17
+def marriedToDescendants(patriarch, matriarch, individual, individuals):
+
+    if individuals[individual]["gender"] ==  'M' and individual == patriarch:
+        return False
+    elif  individuals[individual]["gender"] == 'F' and individual == matriarch:
+        return False
+    elif individuals[individual]["Children"] is None:
+        return True
+    else: 
+        for child in individuals[individual]["Children"]:
+            if child == individual:
+                continue
+            else:
+                return marriedToDescendants(patriarch, matriarch, child, individuals)
+            
+#US18
+def marriedToSiblings(individual):
+ if individual["spouse"] in individual["siblings"]:
+    return False
+ else: 
+    return True
     
 
 class TestUserStories(unittest.TestCase):
@@ -130,6 +153,17 @@ class TestUserStories(unittest.TestCase):
         for case in test_cases:
             calculated_age = calculate_age_at_death(case["birth_date"], case["death_date"])
             self.assertEqual(calculated_age, case["expected_age"], f"Failed for {case['birth_date']} - {case['death_date']}. Expected: {case['expected_age']}, Got: {calculated_age}")
+
+    def test_us17True(self):
+        test5Individual = {"spouse": "I11", "siblings": ["I01"]}
+        self.assertTrue(marriedToSiblings(test5Individual))
+    
+    def test_us018True(self):
+        test6Individuals = {"I1": {"gender": "M", "Children": None}}
+        test6patriarch = "I4"
+        test6matriarch = "I6"
+        self.assertTrue(marriedToDescendants(test6patriarch, test6matriarch, "I1", test6Individuals))
+
 
 if __name__ == '__main__':
     unittest.main()
