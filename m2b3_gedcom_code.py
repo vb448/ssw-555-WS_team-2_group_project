@@ -32,7 +32,7 @@ def process_gedcom_line(line):
             error_messages.append(error_msg)
         else:
             individual_ids.add(individual_id)
-        individuals[individual_id] = {"name": "", "birth_date": None, "death_date": None}
+        individuals[individual_id] = {"name": "", "birth_date": None, "death_date": None, "gender": None, "siblings": [], "spouse": None}
         current_individual = individuals[individual_id]
     elif tag == "NAME" and current_individual:
         name = " ".join(tokens[2:])
@@ -49,6 +49,9 @@ def process_gedcom_line(line):
                 birth_date = " ".join(inner_tokens[2:])
                 break
         current_individual["birth_date"] = birth_date
+
+    elif tag == "SEX" and current_individual:
+        current_individual["gender"] = tokens[2]
 
     elif tag == "DEAT" and current_individual:
         death_date = None
@@ -78,6 +81,18 @@ def process_gedcom_line(line):
             current_family.update({"Children": [childId]})
         else:
             current_family["Children"].append(childId)
+
+        #add children as a field to the individual table for their dad
+        if "Children" not in individuals[current_family["husband_id"]]:
+            individuals[current_family["husband_id"]].update({"Children": [childId]})
+        else:
+            individuals[current_family["husband_id"]]["Children"].append(childId)
+        
+        #add children as a field to the individual table for their mom
+        if "Children" not in individuals[current_family['wife_id']]:
+            individuals[current_family["wife_id"]].update({"Children": [childId]})
+        else:
+            individuals[current_family["wife_id"]]["Children"].append(childId)
 
     elif tag == "HUSB" and current_family:
         husband_id = tokens[2]
@@ -119,6 +134,26 @@ def process_gedcom_line(line):
                 break
         current_family["divorce_date"] = divorce_date
 
+#recursive function for #US17 to identify any marriages to descendants
+def marriedToDescendants(patriarch, matriarch, individual, individuals):
+
+    if individuals[individual]["gender"] ==  'M' and individual == patriarch:
+        error_msg = f"ERROR: FAMILY: US17: {individual} is married to their female ancestor, {matriarch}"
+        error_messages.append(error_msg)
+        return
+    elif  individuals[individual]["gender"] == 'F' and individual == matriarch:
+        error_msg = f"ERROR: FAMILY: US17: {individual} is married to their male ancestor, {patriarch}"
+        error_messages.append(error_msg)
+        return
+    elif individuals[individual]["Children"] is None:
+        return
+    else: 
+        for child in individuals[individual]["Children"]:
+            if child == individual:
+                continue
+            else:
+                return marriedToDescendants(patriarch, matriarch, child, individuals)
+
 # Read the GEDCOM file line by line and process each line
 with open('My-Family.ged', 'r') as file:
     for line in file:
@@ -127,7 +162,7 @@ with open('My-Family.ged', 'r') as file:
 
 # Create PrettyTable for individuals
 individual_table = PrettyTable()
-individual_table.field_names = ["ID", "Name", "Birth Date", "Death Date", "Current Age"] #included current age for US27
+individual_table.field_names = ["ID", "Name", "Gender", "Birth Date", "Death Date", "Spouse", "Children", "Siblings", "Current Age"] #included current age for US27. also added spuse children and siblings for US17 and #US18
 
 # Create PrettyTable for families
 family_table = PrettyTable()
@@ -211,7 +246,31 @@ for individual_id, individual in individuals.items():
                         error_msg = f"ERROR: INDIVIDUAL: US03: {individual_id}: Birth date {birth_date} occurs after death date {death_date}"
                         error_messages.append(error_msg)
 
-    individual_table.add_row([individual_id, individual["name"], individual["birth_date"], individual["death_date"], current_age])
+    #add null value to children array if the individual doesnt have any children
+    if "Children" not in individual:
+        individual.update({"Children": None})
+
+    #ZD added for sprint 3
+    for family_id, family in families.items():
+        husband_id = family["husband_id"]
+        wife_id = family["wife_id"]
+    
+        #for help with US18, adding spouse and siblings to the individuals table
+        individuals[husband_id]["spouse"] = wife_id
+        individuals[wife_id]["spouse"] = husband_id
+
+        if "Children" in family:
+            for x in range(len(family["Children"])):
+                for kid in family["Children"]:
+                    if family["Children"][x] == kid:
+                        continue
+                    else:
+                        if kid not in individuals[family["Children"][x]]["siblings"]:
+                            individuals[family["Children"][x]]["siblings"].append(kid) 
+
+    individual_table.add_row([individual_id, individual["name"], individual["gender"], individual["birth_date"], individual["death_date"], individual["spouse"], individual["Children"], individual["siblings"], current_age])
+
+    #individual_table.add_row([individual_id, individual["name"], individual["birth_date"], individual["death_date"], current_age])
 
 for family_id, family in families.items():
     husband_id = family["husband_id"]
@@ -222,7 +281,7 @@ for family_id, family in families.items():
     marriage_date = family["marriage_date"]
     divorce_date = family["divorce_date"]
 
-    #user story 08 and 09
+    #user story 08, 09 and 17
     if "Children" in family:
         for child in family["Children"]:
             marriage_date_obj = datetime.strptime(marriage_date, "%d %b %Y")
@@ -260,6 +319,9 @@ for family_id, family in families.items():
                 if difference.months > 9:
                     error_msg = f"ERROR: FAMILY: US09: {child}: Born on {birth_date_obj} more than 9 months after the death of their dad on {dad_death_date_obj}"
                     error_messages.append(error_msg) 
+
+            #User Story 17
+            marriedToDescendants(husband_id, wife_id, child, individuals)
 
     if "Children" in family:
         children = family["Children"]
@@ -317,6 +379,11 @@ def US6_divorce_before_death(individuals, family):
                     Error06.append(individuals[wife_id])
     return Error06
 
+#User Story 18
+for id in individuals:
+    if individuals[id]["spouse"] in individuals[id]["siblings"]:
+        error_msg = "ERROR: INDIVIDUAL: US018: " + individuals[id]["spouse"] + " married to their sibling"
+        error_messages.append(error_msg) 
 
 output = ""
 #User Story: 01 - Dates before current date
