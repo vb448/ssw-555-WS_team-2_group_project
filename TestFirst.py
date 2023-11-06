@@ -1,5 +1,5 @@
 import unittest
-import datetime
+from datetime import datetime
 import dateutil.relativedelta
 from m2b3_gedcom_code import process_gedcom_line, individual_ids, error_messages, individuals, name_birth_dict
 
@@ -31,6 +31,20 @@ def birthAfterDeathOfMom(individual, mom):
         return False
     else:
         return True
+
+#US27
+def calculate_current_age(birth_date):
+    birth_date_obj = datetime.strptime(birth_date, "%d %b %Y")
+    today = datetime.now()
+    current_age = today.year - birth_date_obj.year - ((today.month, today.day) < (birth_date_obj.month, birth_date_obj.day))
+    return current_age
+
+#US29
+def calculate_age_at_death(birth_date, death_date):
+    birth_date_obj = datetime.strptime(birth_date, "%d %b %Y")
+    death_date_obj = datetime.strptime(death_date, "%d %b %Y")
+    age_at_death = death_date_obj.year - birth_date_obj.year - ((death_date_obj.month, death_date_obj.day) < (birth_date_obj.month, birth_date_obj.day))
+    return age_at_death
     
 
 class TestUserStories(unittest.TestCase):
@@ -40,6 +54,7 @@ class TestUserStories(unittest.TestCase):
         error_messages.clear()
         individuals.clear()
         name_birth_dict.clear()
+    
     
     def test_us22_uniqueID(self):
         line1 = "0 @I123 INDI"
@@ -70,23 +85,51 @@ class TestUserStories(unittest.TestCase):
         self.assertIn("ERROR: INDIVIDUAL: US23: @I1@ and @I13@: Have the same name and birth date Raj /Palival/ - 21 FEB 1998", error_messages)
     
     def test_us02True(self):
-        test1 = {"Birthday": datetime.datetime(1998, 6, 12), "Wedding Day": datetime.datetime(1999, 6, 12)}
+        test1 = {"Birthday": datetime(1998, 6, 12), "Wedding Day": datetime(1999, 6, 12)}
         self.assertTrue(birthBeforeMarriage(test1))
 
     def test_us03True(self):
-        test2 = {"Birthday": datetime.datetime(1998, 6, 12), "Death Date": datetime.datetime(1998, 6, 13)}
+        test2 = {"Birthday": datetime(1998, 6, 12), "Death Date": datetime(1998, 6, 13)}
         self.assertTrue(birthBeforeDeath(test2))
 
     def test_us08True(self):
-        test3Individual = {"Birthday": datetime.datetime(1998, 6, 12)}
-        test3Parents = {"Marriage Day": datetime.datetime(1997, 6, 13)}
+        test3Individual = {"Birthday": datetime(1998, 6, 12)}
+        test3Parents = {"Marriage Day": datetime(1997, 6, 13)}
         self.assertTrue(birthBeforeMarriageofParents(test3Individual, test3Parents))
 
     def test_us09True(self):
-        test4Individual = {"Birthday": datetime.datetime(1998, 6, 12)}
-        test4Mom = {"Death Day": datetime.datetime(1999, 6, 13)}
+        test4Individual = {"Birthday": datetime(1998, 6, 12)}
+        test4Mom = {"Death Day": datetime(1999, 6, 13)}
         self.assertTrue(birthAfterDeathOfMom(test4Individual, test4Mom))
 
+    def test_US27_current_age_calculation(self):
+        
+        # Birth date format is "%d %b %Y", e.g., "25 Dec 1990"
+        test_birth_date_1 = "25 Dec 1990"
+        test_birth_date_2 = "12 Jan 2000"
+        test_birth_date_3 = "01 Mar 1985"
+
+        # Calculating current age based on today's date
+        current_age_1 = calculate_current_age(test_birth_date_1)
+        current_age_2 = calculate_current_age(test_birth_date_2)
+        current_age_3 = calculate_current_age(test_birth_date_3)
+
+        # Assert statements to check if the calculated ages are as expected
+        self.assertEqual(current_age_1, 32)  # Adjust the expected age according to current date
+        self.assertEqual(current_age_2, 23)
+        self.assertEqual(current_age_3, 38)
+
+    def test_US29_age_at_death_calculation(self):
+        test_cases = [
+            {
+                "birth_date": "15 Mar 1980",
+                "death_date": "20 Jan 2020",
+                "expected_age": 39
+            },
+        ]
+        for case in test_cases:
+            calculated_age = calculate_age_at_death(case["birth_date"], case["death_date"])
+            self.assertEqual(calculated_age, case["expected_age"], f"Failed for {case['birth_date']} - {case['death_date']}. Expected: {case['expected_age']}, Got: {calculated_age}")
 
 if __name__ == '__main__':
     unittest.main()
