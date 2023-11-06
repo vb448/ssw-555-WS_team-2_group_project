@@ -127,11 +127,29 @@ with open('My-Family.ged', 'r') as file:
 
 # Create PrettyTable for individuals
 individual_table = PrettyTable()
-individual_table.field_names = ["ID", "Name", "Birth Date", "Death Date"]
+individual_table.field_names = ["ID", "Name", "Birth Date", "Death Date", "Current Age"] #included current age for US27
 
 # Create PrettyTable for families
 family_table = PrettyTable()
 family_table.field_names = ["ID", "Husband ID", "Husband", "Wife ID", "Wife", "Marriage Date", "Divorce Date", "Children"]
+
+# Create PrettyTable for deceased individuals US29
+deceased_individuals_table = PrettyTable()
+deceased_individuals_table.field_names = ["ID", "Name", "Birth Date", "Death Date", "Age at Death"]
+
+# Populate PrettyTable for deceased individuals
+for individual_id, individual in individuals.items():
+    name = individual["name"]
+    birth_date = individual["birth_date"]
+    death_date = individual["death_date"]
+    
+    if death_date:
+        birth_date_obj = datetime.strptime(birth_date, "%d %b %Y")
+        death_date_obj = datetime.strptime(death_date, "%d %b %Y")
+        age_at_death = death_date_obj.year - birth_date_obj.year - ((death_date_obj.month, death_date_obj.day) < (birth_date_obj.month, birth_date_obj.day))
+        
+        deceased_individuals_table.add_row([individual_id, name, birth_date, death_date, age_at_death])
+
 
 # a dictionary to track individuals with the same name and birth date
 name_birth_dict = {}
@@ -143,6 +161,8 @@ for individual_id, individual in individuals.items():
     death_date = individual["death_date"]
 
     name_birth_key = (name, birth_date)
+
+    current_age = "N/A"
 
     if name_birth_key in name_birth_dict:
         name_birth_dict[name_birth_key].append(individual_id)
@@ -168,7 +188,10 @@ for individual_id, individual in individuals.items():
                 error_msg = f"ERROR: INDIVIDUAL: US23: {individual_id} and {same_name_birth_id}: Have the same name and birth date {name} - {birth_date}"
                 error_messages.append(error_msg)
 
+        #below logic is to list individuals current age for US27
         birth_date_obj = datetime.strptime(birth_date, "%d %b %Y")
+        today = datetime.now()
+        current_age = today.year - birth_date_obj.year - ((today.month, today.day) < (birth_date_obj.month, birth_date_obj.day))
 
         for family_id, family in families.items():
             husband_id = family.get("husband_id")
@@ -188,7 +211,7 @@ for individual_id, individual in individuals.items():
                         error_msg = f"ERROR: INDIVIDUAL: US03: {individual_id}: Birth date {birth_date} occurs after death date {death_date}"
                         error_messages.append(error_msg)
 
-    individual_table.add_row([individual_id, individual["name"], individual["birth_date"], individual["death_date"]])
+    individual_table.add_row([individual_id, individual["name"], individual["birth_date"], individual["death_date"], current_age])
 
 for family_id, family in families.items():
     husband_id = family["husband_id"]
@@ -309,6 +332,9 @@ error_messages.append(output)
 
 print("Individuals:")
 print(individual_table)
+print()
+print("Deceased Individuals:")
+print(deceased_individuals_table)
 
 print("\nFamilies:")
 print(family_table)
